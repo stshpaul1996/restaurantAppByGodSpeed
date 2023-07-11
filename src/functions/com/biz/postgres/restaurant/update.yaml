@@ -5,8 +5,27 @@ tasks:
     args:
       datasource: postgres
       data:
-        where:
-          id: <% parseInt(inputs.params.id) %>
-        data: <% inputs.body %>
+        app.put('/restaurant/:restaurantId', async (req, res) => 
+          const { restaurantId } = req.params;
+          const { name, since, isOpen, opsStartTime, opsEndTime, ownerId, slug, description, location } = req.body;
+          try 
+            const restaurant = await prisma.restaurant.update(
+            where:
+              id: <% parseInt(inputs.params.id) %>
+            data: 
+              name
+              since
+              isOpen,
+              opsStartTime
+              opsEndTime
+              ownerId
+              slug,
+              description
+              location  )
+             return res.json(restaurant)
+            catch (error) 
+              console.error(error);
+              return res.status(500).json( message: 'Internal server error' )
+        )
       config:
         method: Restaurant.update

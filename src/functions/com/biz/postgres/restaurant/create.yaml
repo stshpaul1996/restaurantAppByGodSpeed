@@ -2,9 +2,30 @@ summary: Create Restaurant
 tasks:
   - id: postgres_restaurant_create
     fn: com.gs.datastore
-    args:
+    args: 
       datasource: postgres
-      data:
-        data: <% inputs.body %>
+      data:  <% 
+        app.post('/restaurant', async (req, res) => 
+          const { name, since, isOpen, opsStartTime, opsEndTime, ownerId, slug, description, location } = req.body
+          try 
+           const restaurant = await prisma.restaurant.create(
+            data: 
+             name
+             since
+             isOpen,
+             opsStartTime
+             opsEndTime
+             ownerId
+             slug,
+             description
+             location
+            )
+            return res.status(201).json(restaurant)
+          catch (error) 
+            console.error(error);
+            return res.status(500).json( message: 'Internal server error' );
+        )
+      %>
+          
       config:
         method: Restaurant.create

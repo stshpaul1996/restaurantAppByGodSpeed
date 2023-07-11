@@ -4,6 +4,27 @@ tasks:
     fn: com.gs.datastore
     args:
       datasource: postgres
-      data: <% inputs.body %>
+      data: <%
+        app.post('/restaurant/search', async (req, res) => 
+          const { city, couponCode } = req.body;
+          try 
+             let restaurants = await prisma.restaurant.findMany(
+               where:
+                location: city 
+               include:  
+                menuItems: true
+               )
+              if (couponCode) 
+                    restaurants = restaurants.map((restaurant) => ({
+                   ...restaurant,
+                   menuItems: restaurant.menuItems.filter((menuItem) => menuItem.couponCode.includes(couponCode)),
+                   ));
+              
+              return res.json(restaurants))
+          catch (error) 
+              console.error(error);
+              return res.status(500).json(message: 'Internal server error')
+        )
+      %>
       config:
         method: Restaurant.findMany

@@ -5,7 +5,18 @@ tasks:
     args:
       datasource: postgres
       data:
-        where:
-          id: <% parseInt(inputs.params.id) %>
+        app.get('/restaurant/:restaurantId', async (req, res) => 
+        const { restaurantId } = req.params;
+        try 
+          const restaurant = await prisma.restaurant.findUnique(
+          where:
+           id: <% parseInt(inputs.params.id) %>
+          if (!restaurant) 
+              return res.status(404).json(message: 'Restaurant not found' )
+              return res.json(restaurant))
+        catch (error) 
+            console.error(error);
+              return res.status(500).json( message: 'Internal server error' )
+            )
       config:
         method: Restaurant.findUnique
